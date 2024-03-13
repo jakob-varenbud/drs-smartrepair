@@ -1,7 +1,3 @@
-import { greetUser } from '$utils/greet';
+import { formDuplicator } from './utils/formDuplicator.ts';
 
-window.Webflow ||= [];
-window.Webflow.push(() => {
-  const name = 'John Doe';
-  greetUser(name);
-});
+formDuplicator();
