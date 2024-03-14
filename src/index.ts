@@ -1,3 +1,5 @@
-import { formDuplicator } from './utils/formDuplicator.ts';
+import { datePicker } from '$utils/datePicker.js';
+import { formDuplicator } from '$utils/formDuplicator.ts';
 
 formDuplicator();
+datePicker();
