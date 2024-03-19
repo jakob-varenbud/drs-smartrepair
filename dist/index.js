@@ -50,9 +50,16 @@
         yearSuffix: ""
       };
       $.datepicker.setDefaults($.datepicker.regional["de"]);
+      const futureDate = /* @__PURE__ */ new Date();
+      futureDate.setDate(futureDate.getDate() + 21);
+      const futureDateString = $.datepicker.formatDate("dd.mm.yy", futureDate);
+      $("#datePicker").val(futureDateString);
       $("#datePicker").datepicker({
         minDate: 14,
-        dateFormat: "dd-mm-yy"
+        // Benutzer können erst 14 Tage in der Zukunft wählen
+        dateFormat: "dd.mm.yy",
+        defaultDate: "+21d"
+        // Standarddatum auf 21 Tage in der Zukunft setzen
       });
     });
   };
@@ -94,33 +101,38 @@
     }
   };
 
-  // src/utils/zapier.ts
-  var zapier = () => {
-    document.addEventListener("submit", function(event) {
-      if (event.target.matches("#b2bform")) {
-        event.preventDefault();
-        const datenArray = [];
-        document.querySelectorAll(".Select-Field, .is-table, .Text-Field-4").forEach(function(element) {
-          const elementData = {};
-          if (element.classList.contains("Select-Field")) {
-            elementData["select"] = element.value;
-          } else if (element.classList.contains("is-table")) {
-            elementData["isTable"] = element.value;
-          } else if (element.classList.contains("Text-Field-4")) {
-            elementData["textField4"] = element.value;
+  // src/utils/webflowForm.ts
+  var webflowForm = () => {
+    const form = document.getElementById("b2bform");
+    if (form) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const formData = new FormData(form);
+        const formDataAsStr = new URLSearchParams(formData).toString();
+        fetch("https://hooks.zapier.com/hooks/catch/13068713/3077isi/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: formDataAsStr
+          // Sende den URL-kodierten String
+        }).then((response) => {
+          if (response.ok) {
+            window.location.href = "https://drs-smartrepair.de/danke-fur-ihren-auftrag";
+          } else {
+            throw new Error("Network response was not ok.");
           }
-          datenArray.push(elementData);
+        }).catch((error) => {
+          console.error("There has been a problem with your fetch operation:", error);
         });
-        const datenString = JSON.stringify(datenArray);
-        document.getElementById("verborgenesFeldId").value = datenString;
-        event.target.submit();
-      }
-    });
+      });
+    }
   };
 
   // src/index.ts
   formDuplicator();
   datePicker();
-  zapier();
+  webflowForm();
 })();
 //# sourceMappingURL=index.js.map

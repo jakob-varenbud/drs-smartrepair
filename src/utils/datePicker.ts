@@ -1,5 +1,6 @@
 export const datePicker = () => {
   $(document).ready(function () {
+    // Definiere die regionalen Einstellungen
     $.datepicker.regional['de'] = {
       closeText: 'Schließen',
       prevText: '&#x3C;Zurück',
@@ -45,9 +46,19 @@ export const datePicker = () => {
     };
     $.datepicker.setDefaults($.datepicker.regional['de']);
 
+    // Berechne das Datum 21 Tage in der Zukunft
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 21);
+    const futureDateString = $.datepicker.formatDate('dd.mm.yy', futureDate);
+
+    // Initialisiere das Input-Feld mit diesem Datum
+    $('#datePicker').val(futureDateString);
+
+    // Initialisiere den DatePicker
     $('#datePicker').datepicker({
-      minDate: 14,
-      dateFormat: 'dd-mm-yy',
+      minDate: 14, // Benutzer können erst 14 Tage in der Zukunft wählen
+      dateFormat: 'dd.mm.yy',
+      defaultDate: '+21d', // Standarddatum auf 21 Tage in der Zukunft setzen
     });
   });
 };
